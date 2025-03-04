@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Estadistica</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>8
+    <div class="container">
+        <h1>Statistical Calculator API</h1>
+        <p>Ingresa una lista de numeros:</p>
+
+        <textarea id="data" placeholder="[23, 45, 12, 37, 50, 28, 16, 33, 42, 27]"></textarea>
+        <button onclick="calculate()">Calculate</button>
+
+        <h2>Resultados:</h2>
+        <div id="results"></div>
+
+    </div>
+
+    <script>
+        async function calculate() {
+            const dataInput = document.getElementById('data').value;
+            let data;
+            try {
+                data = JSON.parse(dataInput);
+            } catch (e) {
+                document.getElementById('results').textContent = 'Invalid JSON input';
+                return;
+            }
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({lista: data}),
+                });
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (e) {
+                document.getElementById('results').textContent = 'Error: ' + e.message;
+            }
+        }
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+
+            let basicStatsHtml = "<h3>Datos Básicos</h3><ul>";
+            for (const [key, value] of Object.entries(result.basic_stats)) {
+                basicStatsHtml += `<li><strong>${key}:</strong> ${value}</li>`;
+            }
+            basicStatsHtml += "</ul>";
+
+            // Order the calculated values manually
+            const orderedCalculatedValues = {
+                'Σ(Xi*fi)': result.calculated_values['Σ(Xi*fi)'],
+                'Σ(xi - media)^2 * fi': result.calculated_values['Σ(xi - media)^2 * fi'],
+                'media': result.calculated_values['media'],
+                'poblacion': result.calculated_values['poblacion'],
+                'coeficiente_variacion': result.calculated_values['coeficiente_variacion'],
+                'mediana': result.calculated_values['mediana'],
+                'moda': result.calculated_values['moda'],
+            };
+
+            let calculatedValuesHtml = "<h3>Datos Calculados</h3><ul>";
+            for (const [key, value] of Object.entries(orderedCalculatedValues)) {
+                calculatedValuesHtml += `<li><strong>${key}:</strong> ${value}</li>`;
+            }
+            calculatedValuesHtml += "</ul>";
+
+            let tableHtml = `
+                <h3>Tabla</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rango</th>
+                            <th>xi</th>
+                            <th>fi</th>
+                            <th>xi*fi</th>
+                            <th>Fi</th>
+                            <th>fr%</th>
+                            <th>Grados</th>
+                            <th>(xi-media)^2</th>
+                            <th>(xi-media)^2*fi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${result.table.map(row => `
+                            <tr>
+                                <td>${row.rango.join(' - ')}</td>
+                                <td>${row.xi}</td>
+                                <td>${row.fi}</td>
+                                <td>${row['xi*fi']}</td>
+                                <td>${row.Fi}</td>
+                                <td>${row['fr%']}</td>
+                                <td>${row.grados}</td>
+                                <td>${row['(xi-media)^2']}</td>
+                                <td>${row['(xi-media)^2*fi']}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            resultsDiv.innerHTML = basicStatsHtml + calculatedValuesHtml + tableHtml;
+}
+
+
+    </script>
+</body>
+</html>
