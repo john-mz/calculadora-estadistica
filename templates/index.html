@@ -3,15 +3,151 @@
 <head>
     <title>Calculadora de Estadistica</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .container { max-width: 800px; margin: 0 auto; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; }
+        /* Ghibli-inspired theme */
+        body {
+            font-family: 'Georgia', serif; /* Softer serif font */
+            margin: 0; /* Reset margin for full-page background */
+            padding: 40px; /* Add padding back */
+            /* background-color: #fdfaf6; /* Removed background color to show image */
+            color: #5c5c5c; /* Softer text color */
+            line-height: 1.6;
+            position: relative; /* Needed for z-index context */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+        }
+
+        body::before {
+            content: '';
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('../desktop-background.png'); /* Desktop background */
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            filter: blur(3px); /* Apply blur */
+            z-index: -1; /* Place behind content */
+            background-color: #fdfaf6; /* Fallback color if image fails */
+        }
+
+        h1, h2, h3 {
+            color: #5a6e5b; /* Muted green */
+            font-weight: normal;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #ffffff; /* White container background */
+            padding: 30px;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Soft shadow */
+        }
+        textarea {
+            width: calc(100% - 22px); /* Adjust width to account for padding */
+            height: 100px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #dcd0c0; /* Softer border */
+            border-radius: 5px;
+            font-family: inherit; /* Use body font */
+            resize: vertical; /* Allow vertical resize only */
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #8ab0ab; /* Muted teal/blue */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        button:hover {
+            background-color: #709691; /* Darker shade on hover */
+        }
+        table {
+            width: 100%;
+            border-collapse: separate; /* Use separate for border-spacing */
+            border-spacing: 0;
+            margin-top: 25px;
+            border: 1px solid #e8e0d8; /* Add border to table itself */
+            border-radius: 8px; /* Rounded table corners */
+            overflow: hidden; /* Ensure border-radius applies */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            border-bottom: 1px solid #e8e0d8; /* Lighter, warmer border for rows */
+            padding: 12px 15px; /* Adjusted padding */
+            text-align: left;
+        }
+        th {
+            background-color: #f4f0eb; /* Light beige header */
+            color: #7a7a7a; /* Header text color */
+            border-top: none; /* Remove top border for header cells */
+            border-left: none; 
+            border-right: none;
+        }
+        td {
+            background-color: #fff;
+            border-left: none; 
+            border-right: none;
+        }
+        /* Remove bottom border for last row cells */
+        tbody tr:last-child td {
+             border-bottom: none;
+        }
+        #results ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        #results li {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-left: 4px solid #8ab0ab; /* Accent color */
+            background-color: #f9f7f4;
+            border-radius: 4px;
+        }
+        #results li strong {
+            color: #5a6e5b; /* Match header color */
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        pre { /* Keep pre styling simple or remove if not used */
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+            overflow-x: auto; /* Add scroll for long code lines */
+        }
+
+        /* Media Query for Mobile */
+        @media (max-width: 768px) {
+            body::before {
+                background-image: url('../mobile-background.png'); /* Mobile background */
+            }
+
+            body {
+                padding: 20px; /* Adjust padding for smaller screens */
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+             h1 {
+                font-size: 1.8em;
+             }
+
+             button {
+                width: 100%;
+                padding: 15px;
+             }
+        }
     </style>
 </head>
 <body>
@@ -116,9 +252,7 @@
             `;
 
             resultsDiv.innerHTML = basicStatsHtml + calculatedValuesHtml + tableHtml;
-}
-
-
+        }
     </script>
 </body>
 </html>
